@@ -1,12 +1,11 @@
 import argon2 from "@node-rs/argon2";
-import { Body, Header, Post, Queries, Query, Res, Route } from "tsoa";
-import { eq, or } from "drizzle-orm";
+import { Body, Post, Queries, Route } from "tsoa";
+import { eq } from "drizzle-orm";
 import * as jose from "jose";
 
 import { logger } from "@lib/logger";
 import { DAY } from "@lib/constants";
 import { ErrorBadRequest } from "@lib/status/error";
-import { LogOut } from "../logout";
 import { db, getFirst } from "@lib/db";
 import { Sessions, Users } from "@app/schema";
 import {
@@ -22,7 +21,7 @@ import { JWS_SECRET } from "../jwt-helpers";
 import { NController } from "@lib/ncontroller";
 
 type LoginBody = {
-  username: string;
+  email: string;
   password: string;
 };
 
@@ -39,30 +38,28 @@ export class LoginPasswordController extends NController {
   ) {
     const { success_url, error_url } = Z_RedirectQuery.parse(_query);
 
-    const ip_address = this.getRealIp();
+    const ipAddress = this.getRealIp();
     try {
       this.clearCookie(SESSION_COOKIE_NAME);
       this.clearCookie(FRONTEND_COOKIE_NAME);
 
-      // TODO: EDU-2241: Check IP Address on login
-
       const user = await db
         .select()
         .from(Users)
-        .where(
-          or(eq(Users.username, body.username), eq(Users.email, body.username)),
-        )
+        .where(eq(Users.email, body.email))
         .then(getFirst);
 
       if (!user) {
-        // response.redirect(error_url + "?error=user_not_found");
+        this.redirect(error_url + "?error=user_not_found");
         return;
       }
 
-      const is_valid = await argon2.verify(user.password_hash, body.password);
+      const is_valid =
+        user.passwordHash &&
+        (await argon2.verify(user.passwordHash, body.password));
 
       if (!is_valid) {
-        // response.redirect(error_url + "?error=invalid_password");
+        this.redirect(error_url + "?error=invalid_password");
         return;
       }
 
@@ -71,10 +68,10 @@ export class LoginPasswordController extends NController {
       const session = await db
         .insert(Sessions)
         .values({
-          user_id: user.id,
-          created_at: iat,
-          expires_at: exp,
-          ip_address: ip_address,
+          userId: user.id,
+          createdAt: iat,
+          expiresAt: exp,
+          ipAddress,
         })
         .returning()
         .then(getFirst);
@@ -100,14 +97,14 @@ export class LoginPasswordController extends NController {
       logger.info({
         event: "auth:login_password",
         user_id: user.id,
-        ip_address,
+        ip_address: ipAddress,
         msg: "User logged in successfully",
       });
 
-      // response.redirect(success_url + "?login=successful");
+      this.redirect(success_url + "?login=successful");
     } catch (error) {
       logger.error({ err: error }, "Error in login_password");
-      // response.redirect(error_url + "?error=auth_failed");
+      this.redirect(error_url + "?error=auth_failed");
     }
   }
 }

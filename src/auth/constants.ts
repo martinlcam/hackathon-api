@@ -69,6 +69,15 @@ export const EXPRESS_FRONTEND_COOKIE_OPTIONS = {
   path: "/",
 } as const;
 
+export const EXPRESS_SESSION_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: IS_PRODUCTION,
+  sameSite: "strict",
+  domain: IS_PRODUCTION ? env.API_URL.hostname : "localhost",
+  expires: thirtyDaysFromNow(),
+  path: "/",
+} as const;
+
 export function createCookieString(
   name: string,
   value: string,

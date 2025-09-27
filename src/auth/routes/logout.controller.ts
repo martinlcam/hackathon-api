@@ -24,18 +24,18 @@ export class LogOutController extends NController {
     const session_id = request.cookies[SESSION_COOKIE_NAME];
 
     if (!session_id) {
-      // response.redirect(error_url + "?error=not_logged_in");
+      this.redirect(error_url + "?error=not_logged_in");
       return;
     }
 
     if (typeof session_id !== "string") {
-      // response.redirect(error_url + "?error=invalid_session_id");
+      this.redirect(error_url + "?error=invalid_session_id");
       return;
     }
 
     await db
       .update(Sessions)
-      .set({ force_expire: true, reason_force_expire: "User Logged Out" })
+      .set({ forceExpire: true, reasonForceExpire: "User Logged Out" })
       .where(eq(Sessions.id, session_id));
 
     this.clearCookie(SESSION_COOKIE_NAME);
@@ -48,7 +48,7 @@ export class LogOutController extends NController {
     //   msg: "User logged out successfully",
     // });
 
-    // response.redirect(success_url + "?logout=successful");
+    this.redirect(success_url + "?logout=successful");
   }
 
   @Get("/logout")

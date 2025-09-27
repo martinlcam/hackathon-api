@@ -3,15 +3,16 @@ import { User } from "@app/schema/users";
 
 declare global {
   namespace Express {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
     interface Request {
       // for auth
       user: Omit<User, "password_hash"> | null;
       user_password: string | null;
       session: Pick<
         Session,
-        "user_id" | "id" | "ip_address" | "created_at" | "expires_at"
+        "userId" | "id" | "ipAddress" | "createdAt" | "expiresAt"
       > | null;
+      user_google_id: string | null;
+      auth_method: "session" | "jwt" | null;
 
       // for tracing
       tracing: {

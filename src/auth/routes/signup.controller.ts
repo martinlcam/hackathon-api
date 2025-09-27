@@ -22,7 +22,7 @@ import { NController } from "@lib/ncontroller";
 import type { OTPCode } from "../../types";
 
 type SignupBody = {
-  username: string;
+  name: string;
   password: string;
   email: string;
   code: OTPCode;
@@ -42,7 +42,7 @@ export class SignupController extends NController {
   ): Promise<void> {
     const { success_url, error_url } = Z_RedirectQuery.parse(_query);
 
-    const ip_address = this.getRealIp();
+    const ipAddress = this.getRealIp();
     try {
       // Logout any existing sessions
       this.clearCookie(SESSION_COOKIE_NAME);
@@ -60,12 +60,9 @@ export class SignupController extends NController {
         .insert(Users)
         .values({
           email: body.email,
-          username: body.username,
-          // TODO: Add real name to body (?)
-          name: "",
-          password_hash: hash,
-          known_ips: ip_address ? [ip_address] : [],
-          is_email_verified: true,
+          name: body.name,
+          passwordHash: hash,
+          isEmailVerified: true,
         })
         .returning()
         .then(getFirst)
@@ -86,10 +83,10 @@ export class SignupController extends NController {
       const session = await db
         .insert(Sessions)
         .values({
-          user_id: user.id,
-          created_at: iat,
-          expires_at: exp,
-          ip_address: ip_address,
+          userId: user.id,
+          createdAt: iat,
+          expiresAt: exp,
+          ipAddress,
         })
         .returning()
         .then(getFirst);
@@ -116,7 +113,7 @@ export class SignupController extends NController {
       logger.info({
         event: "auth:signup_password",
         user_id: user.id,
-        ip_address,
+        ip_address: ipAddress,
         msg: "User signed up successfully",
       });
 

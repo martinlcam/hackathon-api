@@ -7,7 +7,6 @@ import {
   boolean,
   varchar,
 } from "drizzle-orm/pg-core";
-import { now } from "./common";
 import { Users } from "./user.schema";
 
 export const Sessions = pgTable("sessions", {
@@ -17,19 +16,19 @@ export const Sessions = pgTable("sessions", {
     .notNull()
     .default(sql`gen_random_uuid()`),
 
-  user_id: uuid("user_id")
+  userId: uuid("user_id")
     .notNull()
     .references(() => Users.id),
-  created_at: timestamp("created_at").notNull().default(now()),
-  expires_at: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  expiresAt: timestamp("expires_at").notNull(),
 
   /** No idea what this does. */
-  is_active: boolean("is_active").notNull().default(true),
+  isActive: boolean("is_active").notNull().default(true),
 
-  force_expire: boolean("force_expire").notNull().default(false),
-  reason_force_expire: text("reason_force_expire").default(""),
+  forceExpire: boolean("force_expire").notNull().default(false),
+  reasonForceExpire: text("reason_force_expire").default(""),
 
-  ip_address: varchar("ip_address", { length: 45 }).notNull(),
+  ipAddress: varchar("ip_address", { length: 45 }).notNull(),
 });
 
 export type Session = typeof Sessions.$inferSelect;

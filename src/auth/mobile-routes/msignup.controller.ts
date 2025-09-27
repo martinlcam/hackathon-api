@@ -15,7 +15,7 @@ import { NController } from "@lib/ncontroller";
 import { OTPCode } from "../../types";
 
 type MobileSignupBody = {
-  username: string;
+  name: string;
   password: string;
   email: string;
   code: OTPCode;
@@ -40,12 +40,9 @@ export class MobileSignupController extends NController {
         .insert(Users)
         .values({
           email: body.email,
-          username: body.username,
-          // TODO: Add real name to body (?)
-          name: "",
-          password_hash: hash,
-          known_ips: ip_address ? [ip_address] : [],
-          is_email_verified: true,
+          name: body.name,
+          passwordHash: hash,
+          isEmailVerified: true,
         })
         .returning()
         .then(getFirst)
@@ -67,10 +64,10 @@ export class MobileSignupController extends NController {
       const session = await db
         .insert(Sessions)
         .values({
-          user_id: user.id,
-          created_at: iat,
-          expires_at: exp,
-          ip_address: ip_address,
+          userId: user.id,
+          createdAt: iat,
+          expiresAt: exp,
+          ipAddress: ip_address,
         })
         .returning()
         .then(getFirst);

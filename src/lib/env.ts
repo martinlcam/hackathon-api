@@ -18,6 +18,8 @@ export const env = createEnv({
       .default("4000")
       .transform((x) => Number.parseInt(x, 10)),
 
+    GOOGLE_CLIENT_ID: z.string(),
+
     API_URL: z
       .enum(["http://localhost:4000"])
       .default("http://localhost:4000")
