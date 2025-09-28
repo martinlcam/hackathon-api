@@ -7,6 +7,36 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"Form": {
+				"properties": {
+					"allergies": {
+						"type": "string"
+					},
+					"major": {
+						"type": "string"
+					},
+					"year": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"allergies",
+					"major",
+					"year"
+				],
+				"type": "object"
+			},
+			"AddAdminBody": {
+				"properties": {
+					"userId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"userId"
+				],
+				"type": "object"
+			},
 			"User": {
 				"properties": {
 					"id": {
@@ -153,6 +183,174 @@
 		"contact": {}
 	},
 	"paths": {
+		"/v1/form": {
+			"post": {
+				"operationId": "SubmitForm",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Form"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetOwnForm",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			},
+			"put": {
+				"operationId": "UpdateForm",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Form"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteForm",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/v1/adminform": {
+			"get": {
+				"operationId": "GetPaginatedForms",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "page",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/v1/add-admin": {
+			"post": {
+				"operationId": "AddAdmin",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AddAdminBody"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/test/redirect": {
 			"get": {
 				"operationId": "Goredirect",
