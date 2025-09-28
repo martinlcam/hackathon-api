@@ -15,7 +15,11 @@ export const Users = pgTable("users", {
   googleId: text("google_id").unique(),
 
   createdAt: timestamp("created_at").notNull().defaultNow(),
+
+  isAdmin: boolean("is_admin").notNull().default(false),
+
 });
+
 
 export type User = typeof Users.$inferSelect;
 export type InsertUser = typeof Users.$inferInsert;

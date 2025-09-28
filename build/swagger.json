@@ -84,7 +84,7 @@
 					"password": {
 						"type": "string"
 					},
-					"username": {
+					"name": {
 						"type": "string"
 					}
 				},
@@ -92,7 +92,7 @@
 					"code",
 					"email",
 					"password",
-					"username"
+					"name"
 				],
 				"type": "object"
 			},
@@ -101,13 +101,24 @@
 					"password": {
 						"type": "string"
 					},
-					"username": {
+					"email": {
 						"type": "string"
 					}
 				},
 				"required": [
 					"password",
-					"username"
+					"email"
+				],
+				"type": "object"
+			},
+			"SignInWithGoogleBody": {
+				"properties": {
+					"idToken": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"idToken"
 				],
 				"type": "object"
 			},
@@ -122,7 +133,7 @@
 					"password": {
 						"type": "string"
 					},
-					"username": {
+					"name": {
 						"type": "string"
 					}
 				},
@@ -130,7 +141,7 @@
 					"code",
 					"email",
 					"password",
-					"username"
+					"name"
 				],
 				"type": "object"
 			}
@@ -361,6 +372,61 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/LoginBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/v2/google/callback": {
+			"post": {
+				"operationId": "SignInWithGoogle",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "header",
+						"name": "x-real-ip",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "inviteCode",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "error_url",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "success_url",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/SignInWithGoogleBody"
 							}
 						}
 					}
