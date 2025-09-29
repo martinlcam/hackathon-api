@@ -39,5 +39,4 @@ export class AddAdminController {
 verify user that called route is admin
 update non admin user to admin status 
 let caller know that user was sucesfully updated
-
 drizzle*/

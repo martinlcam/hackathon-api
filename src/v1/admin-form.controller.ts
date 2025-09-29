@@ -31,5 +31,7 @@ export class AdminFormController
         const result = await db.select().from(applicationInfo).limit(10).offset(10 * page-1);
         return result;
     }
+
+    @
 }
 
