@@ -32,6 +32,6 @@ export class AdminFormController
         return result;
     }
 
-    @
+    
 }
 
